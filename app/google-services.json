@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "823576861919",
+    "project_id": "myownchat-8b870",
+    "storage_bucket": "myownchat-8b870.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:823576861919:android:c6929e8eeefb151c485d6a",
+        "android_client_info": {
+          "package_name": "com.example.myownchat"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDGjyY-zLJTKwkTMhg5FAj2Y_6PPE5qrY0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
