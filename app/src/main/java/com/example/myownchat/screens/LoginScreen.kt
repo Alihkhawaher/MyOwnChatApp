@@ -1,5 +1,6 @@
 package com.example.myownchat.screens
 
+import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -27,18 +28,25 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
+import com.example.myownchat.data.Result
+import com.example.myownchat.viewmodel.AuthViewModel
 
 @Composable
 fun LoginScreen(
-    onNavigationToSignUp: () -> Unit
+    onNavigationToSignUp: () -> Unit,
+    onNavigationToAllChats: () -> Unit,
+    authViewModel: AuthViewModel
 ){
 
-    val login = remember{ mutableStateOf("") }
+    val email = remember{ mutableStateOf("") }
     val password = remember{ mutableStateOf("") }
     var showPassword by remember{ mutableStateOf(false) }
+
+    val context = LocalContext.current
 
     Column(
         modifier = Modifier
@@ -52,10 +60,10 @@ fun LoginScreen(
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
             OutlinedTextField(
-                value = login.value,
-                onValueChange = {login.value = it},
-                label = { Text(text = "Login") },
-                placeholder = { Text(text = "Type your login") },
+                value = email.value,
+                onValueChange = {email.value = it},
+                label = { Text(text = "Email") },
+                placeholder = { Text(text = "Type your email") },
                 leadingIcon = {
                     Icon(imageVector = Icons.Filled.Login, contentDescription = null)
                 }
@@ -91,8 +99,22 @@ fun LoginScreen(
             .height(20.dp))
 
         Button(
-            onClick = { /*TODO*/ },
-
+            onClick = {
+                authViewModel.login(email.value, password.value)
+                when(val result = authViewModel.authResult.value){
+                    is Result.Success -> {
+                        Toast.makeText(context, "Welcome!", Toast.LENGTH_SHORT).show()
+                        onNavigationToAllChats()
+                    }
+                    is Result.Error -> {
+                        Toast.makeText(context, result.exception.message, Toast.LENGTH_SHORT).show()
+                    }
+                    //TODO THINK WHAT TO DO WITH NULLABILITY OF AUTHRESULT
+                    null -> {
+                        Toast.makeText(context, "Something gone wrong, tap once more", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            },
         ) {
             Text(text = "LOG IN")
         }
