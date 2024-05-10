@@ -1,10 +1,11 @@
 package com.example.myownchat.navigation
 
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.example.myownchat.screens.AllChatsScreen
+import com.example.myownchat.screens.MainAppScreen
 import com.example.myownchat.screens.LoginScreen
 import com.example.myownchat.screens.SignUpScreen
 import com.example.myownchat.viewmodel.AuthViewModel
@@ -12,7 +13,7 @@ import com.example.myownchat.viewmodel.AuthViewModel
 @Composable
 fun NavigationGraph(
     navHostController: NavHostController,
-    authViewModel: AuthViewModel
+    authViewModel: AuthViewModel,
 ){
 
     NavHost(navController = navHostController, startDestination = Route.loginRoute.routeToScreen) {
@@ -44,7 +45,9 @@ fun NavigationGraph(
         }
 
         composable(Route.allChatsRoute.routeToScreen){
-            AllChatsScreen()
+            MainAppScreen(
+                navHostController = navHostController
+            )
         }
     }
 
