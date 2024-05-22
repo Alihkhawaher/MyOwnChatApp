@@ -16,8 +16,10 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.rememberNavController
 import com.example.myownchat.navigation.NavigationGraph
 import com.example.myownchat.screens.LoginScreen
+import com.example.myownchat.screens.MainAppView
 import com.example.myownchat.ui.theme.MyOwnChatTheme
 import com.example.myownchat.viewmodel.AuthViewModel
+import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.CoroutineScope
 
 
@@ -26,19 +28,11 @@ class MainActivity : ComponentActivity(){
         super.onCreate(savedInstanceState)
         setContent {
             MyOwnChatTheme {
-
-                val navHostController = rememberNavController()
-                val authViewModel: AuthViewModel = viewModel()
-
-                // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    NavigationGraph(
-                        navHostController = navHostController,
-                        authViewModel = authViewModel
-                    )
+                    MainAppView()
                 }
             }
         }

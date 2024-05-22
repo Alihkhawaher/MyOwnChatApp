@@ -39,8 +39,16 @@ class UserRepository(
         }
     }
 
+    suspend fun signOut(): Result<Boolean>{
+        return try {
+            auth.signOut()
+            Result.Success(true)
+        }catch (e: Exception){
+            Result.Error(e)
+        }
+    }
+
     private suspend fun saveUserToFirestoreDatabase(user: User){
         store.collection("users").document(user.email).set(user).await()
     }
-
 }

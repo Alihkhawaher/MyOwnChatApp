@@ -19,15 +19,24 @@ import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.rememberNavController
+import com.example.myownchat.appbars.AppBottomBar
+import com.example.myownchat.appbars.AppBottomBar
+import com.example.myownchat.appbars.AppTopBar
+import com.example.myownchat.navigation.NavigationGraph
 import com.example.myownchat.navigation.Screen
 import com.example.myownchat.navigation.screensInBottomBar
+import com.example.myownchat.viewmodel.AuthViewModel
 import com.example.myownchat.viewmodel.MainAppViewModel
+import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.CoroutineScope
 
 @Composable
-fun MainAppScreen(
-    navHostController: NavHostController
-){
+fun MainAppView(){
+
+    val navHostController = rememberNavController()
+    val authViewModel: AuthViewModel = viewModel()
+    val firebaseAuth: FirebaseAuth = FirebaseAuth.getInstance()
 
     /*Scaffold state and coroutine scope is used for:
     * - Coroutine scope:
@@ -59,51 +68,27 @@ fun MainAppScreen(
     val navBackStackEntry by navHostController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
 
-    /*
-    * appTopBar - top bar of our application, it is different, depending on the current route
-    * appBottomBar - bottom ar of our application
-    */
-    val appTopBar: @Composable () -> Unit = {}
-    val appBottomBar: @Composable () -> Unit = {
-        if (currentScreen == Screen.BottomScreen.Chats){
-            BottomAppBar(
-                modifier = Modifier.wrapContentSize()
-            ) {
-                screensInBottomBar.forEach{item ->
-                    val isSelected = currentRoute == item.bRoute
-                    val tint = if (isSelected) Color.White else Color.Black
-                    BottomNavigationItem(
-                        selected = isSelected,
-                        onClick = {
-                            navHostController.navigate(item.bRoute){
-                                popUpTo(0)
-                            }
-                            title.value = item.title
-                        },
-                        icon = {
-                            Icon(
-                                painter = painterResource(id = item.icon),
-                                contentDescription = item.title,
-                                tint = tint
-                            )
-                        },
-                        label = {
-                            Text(text = item.title, color = tint)
-                        },
-                        selectedContentColor = Color.White
-                    )
-                }
-            }
-        }
-    }
 
     Scaffold(
-        topBar = appTopBar,
-        bottomBar = appBottomBar,
+        topBar = {
+            AppTopBar(
+                viewModel = viewModel
+            )
+        },
+        bottomBar = {
+            AppBottomBar(
+                navHostController = navHostController,
+                viewModel = viewModel
+            )
+        },
         scaffoldState = scaffoldState
     ) {
         val pd = it
-        Text(text = "hello")
+        NavigationGraph(
+            navHostController = navHostController,
+            authViewModel = authViewModel,
+            userIsAuthentificated = firebaseAuth.currentUser != null,
+        )
     }
 
 }

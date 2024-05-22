@@ -10,14 +10,14 @@ sealed class Screen(val title: String, val route: String) {
         val bRoute: String,
         @DrawableRes val icon: Int
     ): Screen(bTitle, bRoute){
-        object Chats: BottomScreen("Chats", "chats", R.drawable.baseline_chat_24)
-        object Settings: BottomScreen("Settings", "settings", R.drawable.baseline_settings_24)
-        object Contacts: BottomScreen("Contacts", "contacts", R.drawable.baseline_people_24)
+        object Chats: BottomScreen("Chats", "chatsscreen", R.drawable.baseline_chat_24)
+        object Settings: BottomScreen("Settings", "settingsscreen", R.drawable.baseline_settings_24)
+        object Contacts: BottomScreen("Contacts", "contactsscreen", R.drawable.baseline_people_24)
     }
 }
 
 val screensInBottomBar = listOf(
+    Screen.BottomScreen.Contacts,
     Screen.BottomScreen.Chats,
-    Screen.BottomScreen.Settings,
-    Screen.BottomScreen.Contacts
+    Screen.BottomScreen.Settings
 )

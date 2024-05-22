@@ -1,5 +1,6 @@
 package com.example.myownchat.viewmodel
 
+import android.util.Log
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -13,5 +14,6 @@ class MainAppViewModel: ViewModel() {
 
     fun setCurrentScreen(screen: Screen){
         _currentScreen.value = screen
+        Log.d("setCurrentScreen", screen.title)
     }
 }

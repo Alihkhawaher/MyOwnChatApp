@@ -38,7 +38,7 @@ import com.example.myownchat.viewmodel.AuthViewModel
 @Composable
 fun LoginScreen(
     onNavigationToSignUp: () -> Unit,
-    onNavigationToAllChats: () -> Unit,
+    onNavigationToChats: () -> Unit,
     authViewModel: AuthViewModel
 ){
 
@@ -104,7 +104,7 @@ fun LoginScreen(
                 when(val result = authViewModel.authResult.value){
                     is Result.Success -> {
                         Toast.makeText(context, "Welcome!", Toast.LENGTH_SHORT).show()
-                        onNavigationToAllChats()
+                        onNavigationToChats()
                     }
                     is Result.Error -> {
                         Toast.makeText(context, result.exception.message, Toast.LENGTH_SHORT).show()
