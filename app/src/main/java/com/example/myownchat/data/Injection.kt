@@ -1,5 +1,6 @@
 package com.example.myownchat.data
 
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
 object Injection {

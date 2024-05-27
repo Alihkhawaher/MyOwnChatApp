@@ -1,6 +1,7 @@
 package com.example.myownchat
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.PaddingValues
@@ -22,10 +23,14 @@ import com.example.myownchat.viewmodel.AuthViewModel
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.CoroutineScope
 
+var FIREBASE_AUTH: FirebaseAuth? = null
 
 class MainActivity : ComponentActivity(){
-        override fun onCreate(savedInstanceState: Bundle?) {
+    override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        FIREBASE_AUTH = FirebaseAuth.getInstance()
+
         setContent {
             MyOwnChatTheme {
                 Surface(
@@ -33,6 +38,9 @@ class MainActivity : ComponentActivity(){
                     color = MaterialTheme.colorScheme.background
                 ) {
                     MainAppView()
+                    Log.d("IS_SIGNED_IN",
+                        (FIREBASE_AUTH?.currentUser != null).toString()
+                    )
                 }
             }
         }

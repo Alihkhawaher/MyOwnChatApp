@@ -8,7 +8,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
 
 class UserRepository(
-    private val auth: FirebaseAuth,
+    private val auth: FirebaseAuth?,
     private val store: FirebaseFirestore
 ) {
 
@@ -18,7 +18,7 @@ class UserRepository(
         login: String,
     ): Result<Boolean>{
         return try {
-            auth.createUserWithEmailAndPassword(email, password).await()
+            auth?.createUserWithEmailAndPassword(email, password)?.await()
             val user = User(email, login)
             saveUserToFirestoreDatabase(user)
             Result.Success(true)
@@ -32,16 +32,16 @@ class UserRepository(
         password: String
     ): Result<Boolean>{
         return try{
-            auth.signInWithEmailAndPassword(email, password).await()
+            auth?.signInWithEmailAndPassword(email, password)?.await()
             Result.Success(true)
         }catch(e: Exception){
             Result.Error(e)
         }
     }
 
-    suspend fun signOut(): Result<Boolean>{
+    fun signOut(): Result<Boolean>{
         return try {
-            auth.signOut()
+            auth?.signOut()
             Result.Success(true)
         }catch (e: Exception){
             Result.Error(e)

@@ -4,17 +4,18 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.myownchat.FIREBASE_AUTH
 import com.example.myownchat.data.Injection
 import com.example.myownchat.data.Result
 import com.example.myownchat.repository.UserRepository
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.launch
 
 class AuthViewModel: ViewModel() {
     val userRepository: UserRepository
-
     init {
-        userRepository = UserRepository(FirebaseAuth.getInstance(), Injection.instance())
+        userRepository = UserRepository(FIREBASE_AUTH, Injection.instance())
     }
 
     private val _authResult = MutableLiveData<Result<Boolean>>()
@@ -33,8 +34,6 @@ class AuthViewModel: ViewModel() {
     }
 
     fun signOut(){
-        viewModelScope.launch {
-            _authResult.value = userRepository.signOut()
-        }
+        _authResult.value = userRepository.signOut()
     }
 }
