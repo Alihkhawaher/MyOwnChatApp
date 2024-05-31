@@ -38,9 +38,6 @@ class MainActivity : ComponentActivity(){
                     color = MaterialTheme.colorScheme.background
                 ) {
                     MainAppView()
-                    Log.d("IS_SIGNED_IN",
-                        (FIREBASE_AUTH?.currentUser != null).toString()
-                    )
                 }
             }
         }

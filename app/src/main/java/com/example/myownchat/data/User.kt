@@ -1,8 +1,8 @@
 package com.example.myownchat.data
 
 data class User(
+    val isAdmin: Boolean = false,
     val email: String = "",
-    val login: String = "",
     val image: String = "",
-    val isAdmin: Boolean = false
+    val login: String = ""
 )
