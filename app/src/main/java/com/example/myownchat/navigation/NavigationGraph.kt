@@ -5,6 +5,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.myownchat.FIREBASE_AUTH
+import com.example.myownchat.data.User
 import com.example.myownchat.screens.ChatsScreen
 import com.example.myownchat.screens.ContactsScreen
 import com.example.myownchat.screens.LoginScreen
@@ -17,6 +18,7 @@ fun NavigationGraph(
     navHostController: NavHostController,
     authViewModel: AuthViewModel,
     userIsSignedIn: Boolean,
+    currentUser: User?
 ){
 
     NavHost(
@@ -61,7 +63,9 @@ fun NavigationGraph(
         }
 
         composable(Route.settingsRoute.routeToScreen){
-            SettingsScreen()
+            SettingsScreen(
+                user = currentUser
+            )
         }
     }
 

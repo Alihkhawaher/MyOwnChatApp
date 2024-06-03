@@ -29,19 +29,32 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.myownchat.data.User
 import com.example.myownchat.R
 import com.example.myownchat.data.SETTINGS
 
 @Composable
-fun SettingsScreen(){
+fun SettingsScreen(user: User?){
+
+    val configuration = LocalConfiguration.current
+    val screenWidthDp = configuration.screenWidthDp
+
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(paddingValues = PaddingValues(start = 10.dp, end = 10.dp, top = 10.dp, bottom = 70.dp)),
+            .padding(
+                paddingValues = PaddingValues(
+                    start = 10.dp,
+                    end = 10.dp,
+                    top = 10.dp,
+                    bottom = 70.dp
+                )
+            ),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Image(
@@ -55,12 +68,12 @@ fun SettingsScreen(){
         )
         Spacer(modifier = Modifier.height(20.dp))
         Text(
-            text = "Login",
-            fontSize = 40.sp
+            text = user!!.login,
+            fontSize = (adaptiveFontSize(screenWidthDp = screenWidthDp)+10).sp
         )
         Text(
-            text = "Email",
-            fontSize = 40.sp
+            text = user!!.email,
+            fontSize = (adaptiveFontSize(screenWidthDp = screenWidthDp)+5).sp
         )
         Spacer(modifier = Modifier.height(20.dp))
         LazyColumn(
@@ -90,6 +103,9 @@ fun SettingsButton(
     val backgroundColor: Color = if (index % 2 == 0) Color.LightGray else Color.White
     val insidesColor: Color = if (index % 2 == 0) Color.White else Color.Black
 
+    val configuration = LocalConfiguration.current
+    val screenWidthDp = configuration.screenWidthDp
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -109,7 +125,7 @@ fun SettingsButton(
                 .fillMaxHeight()
         )
         Spacer(modifier = Modifier.width(16.dp))
-        Text(text = buttonText, fontSize = 25.sp, color = insidesColor)
+        Text(text = buttonText, fontSize = adaptiveFontSize(screenWidthDp = screenWidthDp).sp, color = insidesColor)
     }
 }
 
@@ -118,4 +134,13 @@ fun loadIconFromDrawableWithString(iconName: String): Painter {
     val context = LocalContext.current
     val resourceId = context.resources.getIdentifier(iconName, "drawable", context.packageName)
     return painterResource(id = resourceId)
+}
+
+@Composable
+fun adaptiveFontSize(screenWidthDp: Int): Float {
+    return when {
+        screenWidthDp < 360 -> 12.sp.value
+        screenWidthDp < 600 -> 16.sp.value
+        else -> 20.sp.value
+    }
 }

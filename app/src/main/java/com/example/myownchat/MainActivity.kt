@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.rememberNavController
+import com.example.myownchat.data.User
 import com.example.myownchat.navigation.NavigationGraph
 import com.example.myownchat.screens.LoginScreen
 import com.example.myownchat.screens.MainAppView
@@ -27,10 +28,10 @@ var FIREBASE_AUTH: FirebaseAuth? = null
 
 class MainActivity : ComponentActivity(){
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
 
         FIREBASE_AUTH = FirebaseAuth.getInstance()
 
+        super.onCreate(savedInstanceState)
         setContent {
             MyOwnChatTheme {
                 Surface(

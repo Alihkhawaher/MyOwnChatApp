@@ -54,22 +54,24 @@ class UserRepository(
         store.collection("users").document(user.email).set(user).await()
     }
 
-    suspend fun getCurrentUser(): Result<User> = try {
-        val uid = auth?.currentUser?.uid
-        if (uid != null){
-            val userDocument = store.collection("users").document(uid).get().await()
-            val user = userDocument.toObject(User::class.java)
-            if (user != null){
-                Log.d("getCurrentUser", "$uid")
-                Result.Success(user)
-            } else{
-                Result.Error(Exception("User data not found"))
+    suspend fun getCurrentUser(): Pair<Result<User>,User?> {
+        return try {
+            val umail = auth?.currentUser?.email
+            if (umail != null){
+                val userDocument = store.collection("users").document(umail).get().await()
+                val user = userDocument.toObject(User::class.java)
+                if (user != null){
+                    Log.d("current user", user.toString())
+                    Pair(Result.Success(user),user)
+                } else{
+                    Pair(Result.Error(Exception("User data not found")),null)
+                }
             }
+            else{
+                Pair(Result.Error(Exception("User not authenticated")),null)
+            }
+        } catch (e: Exception){
+            Pair(Result.Error(e),null)
         }
-        else{
-            Result.Error(Exception("User not authenticated"))
-        }
-    } catch (e: Exception){
-        Result.Error(e)
     }
 }

@@ -31,6 +31,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.myownchat.FIREBASE_AUTH
 import com.example.myownchat.data.Result
+import com.example.myownchat.data.User
 import com.example.myownchat.navigation.NavigationGraph
 import com.example.myownchat.navigation.Route
 import com.example.myownchat.navigation.Screen
@@ -45,7 +46,6 @@ import kotlin.math.log
 fun MainAppView(){
 
     val navHostController = rememberNavController()
-    val authViewModel: AuthViewModel = viewModel()
     val context = LocalContext.current
 
     /*Scaffold state and coroutine scope is used for:
@@ -59,6 +59,8 @@ fun MainAppView(){
     val scope: CoroutineScope = rememberCoroutineScope()
 
 
+
+
     /*viewModel and currentScreen is used for:
     * - viewModel:
     *   to get and know current screen
@@ -70,6 +72,15 @@ fun MainAppView(){
     val viewModel: MainAppViewModel = viewModel()
     val currentScreen = remember{ viewModel.currentScreen.value }
     val title = remember{ mutableStateOf(currentScreen.title) }
+
+
+    val authViewModel: AuthViewModel = viewModel()
+    /*
+    * Setting up the current user as a global variable to use it across the application
+    */
+    authViewModel.getUser()
+    val currentUser: User? = authViewModel.userFromFirebasePairUser.value
+    Log.d("start user", "user = ${currentUser.toString()}")
 
     /*
     * It helps us to discover on what page we are. We take value of our current route and assign it
@@ -185,7 +196,8 @@ fun MainAppView(){
         NavigationGraph(
             navHostController = navHostController,
             authViewModel = authViewModel,
-            userIsSignedIn = FIREBASE_AUTH?.currentUser != null
+            userIsSignedIn = FIREBASE_AUTH?.currentUser != null,
+            currentUser = currentUser
         )
     }
 
