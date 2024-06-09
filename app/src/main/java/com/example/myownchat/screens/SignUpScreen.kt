@@ -1,6 +1,13 @@
 package com.example.myownchat.screens
 
+import android.net.Uri
+import android.util.Log
+import android.widget.ImageButton
+import androidx.compose.foundation.Image
 import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -10,6 +17,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Login
@@ -24,19 +33,33 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.scale
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.semantics.Role.Companion.Image
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat
+import coil.annotation.ExperimentalCoilApi
+import coil.compose.rememberImagePainter
+import com.example.myownchat.R
+import com.example.myownchat.data.Functions
 import com.example.myownchat.data.Result
 import com.example.myownchat.viewmodel.AuthViewModel
+import kotlinx.coroutines.launch
 
 private var TOAST_MESSAGE = ""
 
+@OptIn(ExperimentalCoilApi::class)
 @Composable
 fun SignUpScreen(
     onNavigationToLogin: () -> Unit,
@@ -51,6 +74,16 @@ fun SignUpScreen(
     var showPasswordCheck by remember{ mutableStateOf(false) }
 
     val context = LocalContext.current
+    val scope = rememberCoroutineScope()
+
+    //For selecting user image
+    var selectedImageURI by remember{ mutableStateOf<Uri?>(null) }
+
+    val imagePickerLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent()
+    ) {uri: Uri? ->
+        selectedImageURI = uri
+    }
 
     Column(
         modifier = Modifier
@@ -59,6 +92,39 @@ fun SignUpScreen(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        IconButton(
+            onClick = {
+                imagePickerLauncher.launch("image/*")
+            },
+            modifier = Modifier
+                .size(128.dp)
+                .clip(CircleShape)
+                .border(5.dp, Color.LightGray, CircleShape)
+                .scale(
+                    if(selectedImageURI != null)
+                        1f
+                    else
+                        5f
+                )
+        ) {
+            if (selectedImageURI != null) {
+                // Display selected image
+                Image(
+                    painter = rememberImagePainter(selectedImageURI),
+                    contentDescription = null
+                )
+            } else {
+                // Display default icon
+                Image(
+                    painter = painterResource(id = R.drawable.person_icon),
+                    contentDescription = null
+                )
+            }
+        }
+
+        Spacer(modifier = Modifier
+            .fillMaxWidth()
+            .height(10.dp))
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceEvenly
@@ -145,17 +211,34 @@ fun SignUpScreen(
             .height(20.dp))
         Button(
             onClick = {
-
                 val dataIsValidCheck = checkInputDataIsValid(email.value, password.value, passwordCheck.value)
 
                 if (dataIsValidCheck){
-                    authViewModel.signUp(email.value, password.value, login.value)
+
+                    var imageAsString : String = ""
+                    imageAsString = if(selectedImageURI != null){
+                        val imageBitmap = Functions.getImageBitmapFromUri(context, selectedImageURI!!)
+                        Functions.getImageBase64StringFromBitmap(imageBitmap)
+                    } else{
+                        Functions.getDefaultPersonImageBase64String(context)
+                    }
+
+                    Log.d("peronimage", imageAsString)
+
+
+                    authViewModel.signUp(
+                        email.value,
+                        password.value,
+                        login.value,
+                        imageAsString
+                    )
                     when(val result = authViewModel.authResult.value){
                         is Result.Success -> {
                             login.value = ""
                             email.value = ""
                             password.value = ""
                             passwordCheck.value = ""
+                            selectedImageURI = null
 
                             onNavigationToLogin()
                         }
@@ -202,10 +285,4 @@ fun checkInputDataIsValid(email: String, password: String, passwordCheck: String
         return false
     }
     return true
-}
-
-@Preview(showBackground = true)
-@Composable
-fun SignUpPreview(){
-    SignUpScreen({}, AuthViewModel())
 }

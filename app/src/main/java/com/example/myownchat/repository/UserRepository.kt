@@ -18,10 +18,11 @@ class UserRepository(
         email: String,
         password: String,
         login: String,
-    ): Result<Boolean>{
+        image: String
+   ): Result<Boolean>{
         return try {
             auth?.createUserWithEmailAndPassword(email, password)?.await()
-            val user = User(email = email, login =  login)
+            val user = User(email = email, login = login, image = image)
             saveUserToFirestoreDatabase(user)
             Result.Success(true)
         }catch(e: Exception){

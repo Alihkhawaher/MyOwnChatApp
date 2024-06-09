@@ -1,5 +1,6 @@
 package com.example.myownchat.screens
 
+import android.graphics.Bitmap
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -27,6 +28,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
@@ -36,6 +38,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.myownchat.data.User
 import com.example.myownchat.R
+import com.example.myownchat.data.Functions
 import com.example.myownchat.data.SETTINGS
 
 @Composable
@@ -58,7 +61,7 @@ fun SettingsScreen(user: User?){
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Image(
-            painter = painterResource(id = R.drawable.decoy_person_image),
+            bitmap = Functions.getImageBitmapFromImageBase64String(user!!.image).asImageBitmap(),
             contentDescription = "Person image",
             contentScale = ContentScale.FillBounds,
             modifier = Modifier
@@ -68,11 +71,11 @@ fun SettingsScreen(user: User?){
         )
         Spacer(modifier = Modifier.height(20.dp))
         Text(
-            text = user!!.login,
+            text = user.login,
             fontSize = (adaptiveFontSize(screenWidthDp = screenWidthDp)+10).sp
         )
         Text(
-            text = user!!.email,
+            text = user.email,
             fontSize = (adaptiveFontSize(screenWidthDp = screenWidthDp)+5).sp
         )
         Spacer(modifier = Modifier.height(20.dp))

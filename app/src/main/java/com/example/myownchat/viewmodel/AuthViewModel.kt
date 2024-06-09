@@ -25,9 +25,9 @@ class AuthViewModel: ViewModel() {
     val authResult: LiveData<Result<Boolean>> get() = _authResult
     val userFromFirebasePairUser: LiveData<User> get() = _userFromFirebasePairUser
 
-    fun signUp(email: String, password: String, login: String){
+    fun signUp(email: String, password: String, login: String, image: String){
         viewModelScope.launch {
-            _authResult.value = userRepository.signUp(email, password, login)
+            _authResult.value = userRepository.signUp(email, password, login, image)
         }
     }
 

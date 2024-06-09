@@ -1,5 +1,7 @@
 package com.example.myownchat.data
 
+import com.example.myownchat.R
+
 sealed class Settings(val iconName: String, val settingsName: String) {
     object personSetting: Settings("person_icon", "Person")
     object friendsSetting: Settings("friends_icon", "Friends")
