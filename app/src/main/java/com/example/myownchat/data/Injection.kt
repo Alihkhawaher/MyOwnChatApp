@@ -1,14 +1,5 @@
 package com.example.myownchat.data
 
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestore
-
 object Injection {
-    private val instance: FirebaseFirestore by lazy{
-        FirebaseFirestore.getInstance()
-    }
-
-    fun instance(): FirebaseFirestore{
-        return instance
-    }
+    // This class can be used later for dependency injection if needed
 }
