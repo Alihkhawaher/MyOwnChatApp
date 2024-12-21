@@ -1,0 +1,5 @@
+[2024-12-22 01:46:34] [script]: Created push_to_emulator.cmd with separate build, start, and push operations for better control
+[2024-12-22 01:48:29] [script]: Updated push_to_emulator.cmd with full Android SDK tool paths
+[2024-12-22 01:48:48] [script]: Enhanced push_to_emulator.cmd with improved error handling and device checks
+[2024-12-22 01:49:15] [script]: Updated push_to_emulator.cmd with device targeting support and improved SDK path handling
+[2024-12-22 01:50:58] [script]: Enhanced push_to_emulator.cmd with automatic device listing and improved device selection
