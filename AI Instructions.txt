@@ -1,18 +1,23 @@
 First Phase (Finished):
 1. review the app, understand it. It is an Android App written in Kotlin.
 2. Convert it to a simple LLM Chat, remove the login screen, keep it simple.
-3. Save your understanding in a json file. Keep it updated. Everytime your understanding of the project changes.
-4. Do not add new functionality unless it is apprved by me.
+3. Save your understanding in a json file. Keep it updated. Every time your understanding of the project changes.
+4. Do not add new functionality unless it is approved by me.
 5. Keep it simple, first phase purpose is a working app. we will add more functionality later.
-6. Create a changelog-001.json and keep it updated of the changes. each change will take one line.
+6. Create a changelog-001.log and keep it updated of the changes. each change will take one line.
 
 Second Phase (Finished):
 1. Read project_understanding.json to understand the current state.
 2. Compile the project
-3. Create a changelog-002.json and keep it updated of the changes. each change will take one line.
+3. Create a changelog-002.log and keep it updated of the changes. each change will take one line.
 
 
-Third Phase (Pending):
+Third Phase (Finished):
 1. Read project_understanding.json to understand the current state.
-2. create a github repository
-3. Create a changelog-003.json and keep it updated of the changes. each change will take one line.
+2. create a GitHub repository
+3. Create a changelog-003.log and keep it updated of the changes. each change will take one line.
+
+
+Forth Phase (Pending):
+1. Add claude and google providers
+Create a changelog-004.log and keep it updated of the changes. each change will take one line.

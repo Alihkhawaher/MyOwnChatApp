@@ -14,16 +14,34 @@
         "purpose": "Chat business logic",
         "functionality": [
           "Manages message state and history",
-          "Handles OpenAI API integration",
+          "Handles multiple LLM provider integrations",
+          "Manages provider selection and configuration",
           "Provides loading and API key states",
           "Maintains conversation context",
           "Error handling"
         ]
       },
+      "ChatProvider": {
+        "purpose": "LLM provider interface",
+        "functionality": [
+          "Defines common interface for all LLM providers",
+          "Handles message sending and response processing",
+          "Manages API key validation",
+          "Provides provider information"
+        ],
+        "implementations": [
+          "ClaudeProvider - Anthropic's Claude integration",
+          "GoogleProvider - Google's Gemini integration",
+          "LocalLLMProvider - Custom local LLM support"
+        ]
+      },
       "ApiKeyScreen": {
         "purpose": "Configuration interface",
         "functionality": [
-          "Secure API key input",
+          "Provider selection dropdown",
+          "Dynamic configuration based on provider",
+          "Secure API key input for providers that require it",
+          "Local LLM server URL configuration",
           "Input validation",
           "Navigation to chat"
         ]
@@ -54,22 +72,28 @@
         "ViewModel",
         "OkHttp",
         "Coroutines",
-        "Navigation Compose"
+        "Navigation Compose",
+        "org.json"
       ],
       "removed": [
         "Firebase Auth",
         "Firebase Firestore",
-        "Google Services"
+        "Google Services",
+        "OpenAI dependency"
       ]
     }
   },
   "features": {
     "implemented": [
-      "API key configuration",
+      "Multiple LLM provider support",
+      "Provider selection interface",
+      "Dynamic provider configuration",
+      "Claude API integration",
+      "Gemini API integration",
+      "Local LLM support",
       "Simple chat interface",
       "Message history with context",
       "Loading indicators",
-      "OpenAI integration",
       "Error handling",
       "Auto-scroll",
       "Material Design 3",
@@ -107,8 +131,12 @@
     "Message persistence across sessions",
     "Multiple conversation support",
     "System prompt configuration",
-    "Model parameter customization",
-    "Export chat history"
+    "Model parameter customization per provider",
+    "Export chat history",
+    "Provider-specific conversation handling",
+    "Streaming responses support",
+    "Provider switching mid-conversation",
+    "Provider response comparison"
   ],
   "build_status": {
     "last_successful_build": "Phase 2",

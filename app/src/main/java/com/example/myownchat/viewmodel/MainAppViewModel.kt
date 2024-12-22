@@ -5,16 +5,10 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.myownchat.providers.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import okhttp3.MediaType.Companion.toMediaType
-import okhttp3.OkHttpClient
-import okhttp3.Request
-import okhttp3.RequestBody.Companion.toRequestBody
-import org.json.JSONArray
-import org.json.JSONObject
-import java.io.IOException
 
 data class Message(
     val content: String,
@@ -31,16 +25,31 @@ class MainAppViewModel : ViewModel() {
     private val _isApiKeySet = mutableStateOf(false)
     val isApiKeySet: Boolean get() = _isApiKeySet.value
 
-    private var apiKey: String = ""
-    private val client = OkHttpClient()
+    private val _selectedProvider = mutableStateOf<ChatProvider?>(null)
+    val selectedProvider: ChatProvider? get() = _selectedProvider.value
+
+    private val providers = listOf(
+        ClaudeProvider(),
+        GoogleProvider(),
+        LocalLLMProvider()
+    )
+    val availableProviders: List<ChatProvider> get() = providers
 
     fun setApiKey(key: String) {
-        apiKey = key
-        _isApiKeySet.value = true
+        selectedProvider?.let { provider ->
+            if (provider.validateApiKey(key)) {
+                _isApiKeySet.value = true
+            }
+        }
+    }
+
+    fun selectProvider(provider: ChatProvider) {
+        _selectedProvider.value = provider
+        _isApiKeySet.value = !provider.requiresApiKey()
     }
 
     fun sendMessage(message: String) {
-        if (message.isBlank() || !isApiKeySet) return
+        if (message.isBlank() || !isApiKeySet || selectedProvider == null) return
         
         _messages.add(Message(message, true))
         _isLoading.value = true
@@ -60,52 +69,22 @@ class MainAppViewModel : ViewModel() {
         }
     }
 
-    private fun getAIResponse(message: String): String {
-        val messagesArray = JSONArray().apply {
-            // Add all previous messages for context
-            _messages.forEach { msg ->
-                put(JSONObject().apply {
-                    put("role", if (msg.isUser) "user" else "assistant")
-                    put("content", msg.content)
-                })
-            }
-            // Add the new message
-            put(JSONObject().apply {
-                put("role", "user")
-                put("content", message)
-            })
+    private suspend fun getAIResponse(message: String): String {
+        val conversationHistory = _messages.dropLast(1).map { msg ->
+            Pair(if (msg.isUser) "user" else "assistant", msg.content)
         }
 
-        val jsonBody = JSONObject().apply {
-            put("model", "gpt-3.5-turbo")
-            put("messages", messagesArray)
-            put("temperature", 0.7)
-        }
-
-        val request = Request.Builder()
-            .url("https://api.openai.com/v1/chat/completions")
-            .addHeader("Authorization", "Bearer $apiKey")
-            .addHeader("Content-Type", "application/json")
-            .post(jsonBody.toString().toRequestBody("application/json".toMediaType()))
-            .build()
-
-        client.newCall(request).execute().use { response ->
-            if (!response.isSuccessful) {
-                val errorBody = response.body?.string()
-                Log.e("ChatViewModel", "API Error: $errorBody")
-                throw IOException("API error: ${response.code}")
-            }
-            
-            val responseBody = response.body?.string() ?: throw IOException("Empty response")
-            val jsonResponse = JSONObject(responseBody)
-            return jsonResponse.getJSONArray("choices")
-                .getJSONObject(0)
-                .getJSONObject("message")
-                .getString("content")
+        return when (val result = selectedProvider!!.sendMessage(message, conversationHistory)) {
+            is com.example.myownchat.data.Result.Success -> result.data
+            is com.example.myownchat.data.Result.Error -> throw result.exception
         }
     }
 
     fun clearMessages() {
         _messages.clear()
+    }
+
+    fun updateLocalLLMUrl(url: String) {
+        providers.filterIsInstance<LocalLLMProvider>().firstOrNull()?.updateServerUrl(url)
     }
 }
